@@ -1,6 +1,6 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
-// @externs_url http://closure-compiler.googlecode.com/svn/trunk/contrib/externs/maps/google_maps_api_v3.js
+// @externs_url https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_16.js
 // ==/ClosureCompiler==
 
 /**
@@ -61,10 +61,6 @@ function InfoBubble(opt_options) {
   if (options['padding'] == undefined) {
     options['padding'] = this.PADDING_;
   }
-  
-  if(options['tabPadding'] == undefined) {
-    options['tabPadding'] == this.TABPADDING_;
-  }
 
   if (options['arrowPosition'] == undefined) {
     options['arrowPosition'] = this.ARROW_POSITION_;
@@ -94,8 +90,11 @@ function InfoBubble(opt_options) {
     options['arrowStyle'] = this.ARROW_STYLE_;
   }
 
-  this.buildDom_();
+  if (options['closeSrc'] == undefined) {
+    options['closeSrc'] = this.CLOSE_SRC_;
+  }
 
+  this.buildDom_();
   this.setValues(options);
 }
 window['InfoBubble'] = InfoBubble;
@@ -148,12 +147,6 @@ InfoBubble.prototype.ARROW_POSITION_ = 50;
  */
 InfoBubble.prototype.PADDING_ = 10;
 
-/**
- * Default tab Padding
- * @const
- * @private
- */
-InfoBubble.prototype.TABPADDING_ = 10;
 
 /**
  * Default border width
@@ -186,6 +179,12 @@ InfoBubble.prototype.BORDER_RADIUS_ = 10;
  */
 InfoBubble.prototype.BACKGROUND_COLOR_ = '#fff';
 
+/**
+ * Default close image source
+ * @const
+ * @private
+ */
+InfoBubble.prototype.CLOSE_SRC_ = 'https://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
 
 /**
  * Extends a objects prototype by anothers.
@@ -218,14 +217,21 @@ InfoBubble.prototype.buildDom_ = function() {
   tabsContainer.style['position'] = 'relative';
 
   // Close button
-  var close = this.close_ = document.createElement('IMG');
+  // var close = this.close_ = document.createElement('IMG');
+  // close.style['position'] = 'absolute';
+  // close.style['border'] = 0;
+  // close.style['zIndex'] = this.baseZIndex_ + 1;
+  // close.style['cursor'] = 'pointer';
+  // close.className = 'js-info-bubble-close';
+  // close.src = this.get('closeSrc');
+
+  //WBX CUSTOM close div
+  var close = this.close_ = document.createElement('DIV');
   close.style['position'] = 'absolute';
-  close.style['width'] = this.px(12);
-  close.style['height'] = this.px(12);
   close.style['border'] = 0;
   close.style['zIndex'] = this.baseZIndex_ + 1;
   close.style['cursor'] = 'pointer';
-  close.src = 'http://maps.gstatic.com/intl/en_us/mapfiles/iw_close.gif';
+  close.className = 'js-info-bubble-close';
 
   var that = this;
   google.maps.event.addDomListener(close, 'click', function() {
@@ -240,6 +246,8 @@ InfoBubble.prototype.buildDom_ = function() {
   contentContainer.style['cursor'] = 'default';
   contentContainer.style['clear'] = 'both';
   contentContainer.style['position'] = 'relative';
+  //WBX CUSTOM add classes to outer container
+  contentContainer.className = "infoBubble-outer-container js-add-custom-scrollbars";
 
   var content = this.content_ = document.createElement('DIV');
   contentContainer.appendChild(content);
@@ -304,8 +312,7 @@ InfoBubble.prototype.buildDom_ = function() {
 InfoBubble.prototype.setBackgroundClassName = function(className) {
   this.set('backgroundClassName', className);
 };
-InfoBubble.prototype['setBackgroundClassName'] =
-    InfoBubble.prototype.setBackgroundClassName;
+InfoBubble.prototype['setBackgroundClassName'] = InfoBubble.prototype.setBackgroundClassName;
 
 
 /**
@@ -314,8 +321,7 @@ InfoBubble.prototype['setBackgroundClassName'] =
 InfoBubble.prototype.backgroundClassName_changed = function() {
   this.content_.className = this.get('backgroundClassName');
 };
-InfoBubble.prototype['backgroundClassName_changed'] =
-    InfoBubble.prototype.backgroundClassName_changed;
+InfoBubble.prototype['backgroundClassName_changed'] = InfoBubble.prototype.backgroundClassName_changed;
 
 
 /**
@@ -326,19 +332,8 @@ InfoBubble.prototype['backgroundClassName_changed'] =
 InfoBubble.prototype.setTabClassName = function(className) {
   this.set('tabClassName', className);
 };
-InfoBubble.prototype['setTabClassName'] =
-    InfoBubble.prototype.setTabClassName;
+InfoBubble.prototype['setTabClassName'] = InfoBubble.prototype.setTabClassName;
 
-/**
- * Sets the class of the active Tab
- *
- * @param {string} className the class name to set.
- */
-InfoBubble.prototype.setActiveTabClassName = function(activeTabClassName) {
-  this.set('activeTabClassName', activeTabClassName);
-};
-InfoBubble.prototype['activeTabClassName'] =
-    InfoBubble.prototype.setActiveTabClassName;
 
 /**
  * tabClassName changed MVC callback
@@ -346,8 +341,7 @@ InfoBubble.prototype['activeTabClassName'] =
 InfoBubble.prototype.tabClassName_changed = function() {
   this.updateTabStyles_();
 };
-InfoBubble.prototype['tabClassName_changed'] =
-    InfoBubble.prototype.tabClassName_changed;
+InfoBubble.prototype['tabClassName_changed'] = InfoBubble.prototype.tabClassName_changed;
 
 
 /**
@@ -369,8 +363,7 @@ InfoBubble.prototype.getArrowStyle_ = function() {
 InfoBubble.prototype.setArrowStyle = function(style) {
   this.set('arrowStyle', style);
 };
-InfoBubble.prototype['setArrowStyle'] =
-    InfoBubble.prototype.setArrowStyle;
+InfoBubble.prototype['setArrowStyle'] = InfoBubble.prototype.setArrowStyle;
 
 
 /**
@@ -379,8 +372,7 @@ InfoBubble.prototype['setArrowStyle'] =
 InfoBubble.prototype.arrowStyle_changed = function() {
   this.arrowSize_changed();
 };
-InfoBubble.prototype['arrowStyle_changed'] =
-    InfoBubble.prototype.arrowStyle_changed;
+InfoBubble.prototype['arrowStyle_changed'] = InfoBubble.prototype.arrowStyle_changed;
 
 
 /**
@@ -402,8 +394,7 @@ InfoBubble.prototype.getArrowSize_ = function() {
 InfoBubble.prototype.setArrowSize = function(size) {
   this.set('arrowSize', size);
 };
-InfoBubble.prototype['setArrowSize'] =
-    InfoBubble.prototype.setArrowSize;
+InfoBubble.prototype['setArrowSize'] = InfoBubble.prototype.setArrowSize;
 
 
 /**
@@ -412,8 +403,7 @@ InfoBubble.prototype['setArrowSize'] =
 InfoBubble.prototype.arrowSize_changed = function() {
   this.borderWidth_changed();
 };
-InfoBubble.prototype['arrowSize_changed'] =
-    InfoBubble.prototype.arrowSize_changed;
+InfoBubble.prototype['arrowSize_changed'] = InfoBubble.prototype.arrowSize_changed;
 
 
 /**
@@ -424,8 +414,7 @@ InfoBubble.prototype['arrowSize_changed'] =
 InfoBubble.prototype.setArrowPosition = function(pos) {
   this.set('arrowPosition', pos);
 };
-InfoBubble.prototype['setArrowPosition'] =
-    InfoBubble.prototype.setArrowPosition;
+InfoBubble.prototype['setArrowPosition'] = InfoBubble.prototype.setArrowPosition;
 
 
 /**
@@ -448,8 +437,7 @@ InfoBubble.prototype.arrowPosition_changed = function() {
 
   this.redraw_();
 };
-InfoBubble.prototype['arrowPosition_changed'] =
-    InfoBubble.prototype.arrowPosition_changed;
+InfoBubble.prototype['arrowPosition_changed'] = InfoBubble.prototype.arrowPosition_changed;
 
 
 /**
@@ -538,8 +526,7 @@ InfoBubble.prototype.shadowStyle_changed = function() {
     this.draw();
   }
 };
-InfoBubble.prototype['shadowStyle_changed'] =
-    InfoBubble.prototype.shadowStyle_changed;
+InfoBubble.prototype['shadowStyle_changed'] = InfoBubble.prototype.shadowStyle_changed;
 
 
 /**
@@ -566,8 +553,7 @@ InfoBubble.prototype['hideCloseButton'] = InfoBubble.prototype.hideCloseButton;
 InfoBubble.prototype.hideCloseButton_changed = function() {
   this.close_.style['display'] = this.get('hideCloseButton') ? 'none' : '';
 };
-InfoBubble.prototype['hideCloseButton_changed'] =
-    InfoBubble.prototype.hideCloseButton_changed;
+InfoBubble.prototype['hideCloseButton_changed'] = InfoBubble.prototype.hideCloseButton_changed;
 
 
 /**
@@ -580,8 +566,7 @@ InfoBubble.prototype.setBackgroundColor = function(color) {
     this.set('backgroundColor', color);
   }
 };
-InfoBubble.prototype['setBackgroundColor'] =
-    InfoBubble.prototype.setBackgroundColor;
+InfoBubble.prototype['setBackgroundColor'] = InfoBubble.prototype.setBackgroundColor;
 
 
 /**
@@ -595,8 +580,7 @@ InfoBubble.prototype.backgroundColor_changed = function() {
       ' transparent transparent';
   this.updateTabStyles_();
 };
-InfoBubble.prototype['backgroundColor_changed'] =
-    InfoBubble.prototype.backgroundColor_changed;
+InfoBubble.prototype['backgroundColor_changed'] = InfoBubble.prototype.backgroundColor_changed;
 
 
 /**
@@ -631,8 +615,7 @@ InfoBubble.prototype.borderColor_changed = function() {
 
   this.updateTabStyles_();
 };
-InfoBubble.prototype['borderColor_changed'] =
-    InfoBubble.prototype.borderColor_changed;
+InfoBubble.prototype['borderColor_changed'] = InfoBubble.prototype.borderColor_changed;
 
 
 /**
@@ -677,8 +660,7 @@ InfoBubble.prototype.borderRadius_changed = function() {
 
   this.redraw_();
 };
-InfoBubble.prototype['borderRadius_changed'] =
-    InfoBubble.prototype.borderRadius_changed;
+InfoBubble.prototype['borderRadius_changed'] = InfoBubble.prototype.borderRadius_changed;
 
 
 /**
@@ -717,8 +699,7 @@ InfoBubble.prototype.borderWidth_changed = function() {
   this.borderRadius_changed();
   this.redraw_();
 };
-InfoBubble.prototype['borderWidth_changed'] =
-    InfoBubble.prototype.borderWidth_changed;
+InfoBubble.prototype['borderWidth_changed'] = InfoBubble.prototype.borderWidth_changed;
 
 
 /**
@@ -762,7 +743,12 @@ InfoBubble.prototype.updateArrowStyle_ = function() {
     outer.style['marginLeft'] = inner.style['marginLeft'] = 0;
   }
 
-
+  // If there is no border then don't show thw outer arrow
+  if (borderWidth == 0) {
+    outer.style['display'] = 'none';
+  } else {
+    outer.style['display'] = '';
+  }
 };
 
 
@@ -776,15 +762,19 @@ InfoBubble.prototype.setPadding = function(padding) {
 };
 InfoBubble.prototype['setPadding'] = InfoBubble.prototype.setPadding;
 
+
 /**
- * set the padding of the Tab's
+ * Set the close image url
  *
- * @param {number} padding The padding to apply to the tab
+ * @param {string} src The url of the image used as a close icon
  */
-InfoBubble.prototype.settabPadding = function(tabPadding) {
-  this.set('tabPadding', tabPadding);
+InfoBubble.prototype.setCloseSrc = function(src) {
+  if (src && this.close_) {
+    this.close_.src = src;
+  }
 };
-InfoBubble.prototype['settabPadding'] = InfoBubble.prototype.settabPadding;
+InfoBubble.prototype['setCloseSrc'] = InfoBubble.prototype.setCloseSrc;
+
 
 /**
  * Set the padding of the InfoBubble
@@ -796,18 +786,13 @@ InfoBubble.prototype.getPadding_ = function() {
   return parseInt(this.get('padding'), 10) || 0;
 };
 
-InfoBubble.prototype.gettabPadding_ = function() {
-  return parseInt(this.get('tabPadding'), 10) || 0;
-};
 
 /**
  * padding changed MVC callback
  */
 InfoBubble.prototype.padding_changed = function() {
   var padding = this.getPadding_();
-  var tabPadding = this.gettabPadding_();
   this.contentContainer_.style['padding'] = this.px(padding);
-  this.contentContainer_.style['tabPadding'] = this.px(padding);
   this.updateTabStyles_();
 
   this.redraw_();
@@ -871,16 +856,40 @@ InfoBubble.prototype.onAdd = function() {
     panes.floatPane.appendChild(this.bubble_);
     panes.floatShadow.appendChild(this.bubbleShadow_);
   }
+
+  /* once the infoBubble has been added to the DOM, fire 'domready' event */
+  google.maps.event.trigger(this, 'domready');
 };
 InfoBubble.prototype['onAdd'] = InfoBubble.prototype.onAdd;
 
 
+/*
+ * Sets InfoBubble Position
+ * */
+InfoBubble.prototype.setBubbleOffset = function(xOffset, yOffset) {
+  this.bubbleOffsetX = parseInt(xOffset);
+  this.bubbleOffsetY = parseInt(yOffset);
+}
+
+
+/*
+ * Gets InfoBubble Position
+ * */
+InfoBubble.prototype.getBubbleOffset = function() {
+  return {
+    x: this.bubbleOffsetX || 0,
+    y: this.bubbleOffsetY || 0
+  }
+}
+
+//WBX CUSTOM CHANGES => position infoBubble
 /**
  * Draw the InfoBubble
  * Implementing the OverlayView interface
  */
 InfoBubble.prototype.draw = function() {
   var projection = this.getProjection();
+
   if (!projection) {
     // The map projection is not ready yet so do nothing
     return;
@@ -894,6 +903,7 @@ InfoBubble.prototype.draw = function() {
   }
 
   var tabHeight = 0;
+
   if (this.activeTab_) {
     tabHeight = this.activeTab_.offsetHeight;
   }
@@ -913,14 +923,14 @@ InfoBubble.prototype.draw = function() {
   }
 
   // Adjust for the height of the info bubble
-  var top = pos.y - (height + arrowSize);
+  var top = pos.y - (height + arrowSize) + this.getBubbleOffset().y;
 
   if (anchorHeight) {
     // If there is an anchor then include the height
     top -= anchorHeight;
   }
 
-  var left = pos.x - (width * arrowPosition);
+  var left = pos.x - (width * arrowPosition) + this.getBubbleOffset().x;
 
   this.bubble_.style['top'] = this.px(top);
   this.bubble_.style['left'] = this.px(left);
@@ -934,7 +944,7 @@ InfoBubble.prototype.draw = function() {
       this.bubbleShadow_.style['left'] = this.px(left);
       this.bubbleShadow_.style['width'] = this.px(width);
       this.bubbleShadow_.style['height'] =
-          this.px(this.contentContainer_.offsetHeight - arrowSize);
+        this.px(this.contentContainer_.offsetHeight - arrowSize);
       break;
     case 2:
       // Shadow is below
@@ -1017,6 +1027,7 @@ InfoBubble.prototype.open = function(opt_map, opt_anchor) {
   }, 0);
 };
 
+
 /**
  * Open the InfoBubble
  * @private
@@ -1091,8 +1102,7 @@ InfoBubble.prototype['getPosition'] = InfoBubble.prototype.getPosition;
 InfoBubble.prototype.position_changed = function() {
   this.draw();
 };
-InfoBubble.prototype['position_changed'] =
-    InfoBubble.prototype.position_changed;
+InfoBubble.prototype['position_changed'] = InfoBubble.prototype.position_changed;
 
 
 /**
@@ -1235,10 +1245,10 @@ InfoBubble.prototype.updateContent_ = function() {
         that.imageLoaded_();
       });
     }
-    google.maps.event.trigger(this, 'domready');
   }
   this.redraw_();
 };
+
 
 /**
  * Image loaded
@@ -1252,6 +1262,7 @@ InfoBubble.prototype.imageLoaded_ = function() {
   }
 };
 
+
 /**
  * Updates the styles of the tabs
  * @private
@@ -1263,7 +1274,7 @@ InfoBubble.prototype.updateTabStyles_ = function() {
     }
     this.activeTab_.style['zIndex'] = this.baseZIndex_;
     var borderWidth = this.getBorderWidth_();
-    var padding = this.gettabPadding_() / 2;
+    var padding = this.getPadding_() / 2;
     this.activeTab_.style['borderBottomWidth'] = 0;
     this.activeTab_.style['paddingBottom'] = this.px(padding + borderWidth);
   }
@@ -1280,16 +1291,16 @@ InfoBubble.prototype.setTabStyle_ = function(tab) {
   var borderColor = this.get('borderColor');
   var borderRadius = this.getBorderRadius_();
   var borderWidth = this.getBorderWidth_();
-  var padding = this.gettabPadding_();
+  var padding = this.getPadding_();
 
-  var marginRight = this.px(-(Math.max(padding, borderRadius)/2));
-  console.log(marginRight);
+  var marginRight = this.px(-(Math.max(padding, borderRadius)));
   var borderRadiusPx = this.px(borderRadius);
 
   var index = this.baseZIndex_;
   if (tab.index) {
     index -= tab.index;
   }
+
   // The styles for the tab
   var styles = {
     'cssFloat': 'left',
@@ -1315,11 +1326,9 @@ InfoBubble.prototype.setTabStyle_ = function(tab) {
   }
 
   var className = this.get('tabClassName');
-
   if (className != undefined) {
     tab.className += ' ' + className;
   }
-  console.log(this);
 };
 
 
@@ -1363,17 +1372,16 @@ InfoBubble.prototype.setTabActive_ = function(tab) {
     return;
   }
 
-  var padding = this.gettabPadding_() / 2;
+  var padding = this.getPadding_() / 2;
   var borderWidth = this.getBorderWidth_();
 
   if (this.activeTab_) {
     var activeTab = this.activeTab_;
-    activeTab.className = this.tabClassName;
     activeTab.style['zIndex'] = this.baseZIndex_ - activeTab.index;
     activeTab.style['paddingBottom'] = this.px(padding);
     activeTab.style['borderBottomWidth'] = this.px(borderWidth);
   }
-  tab.className = this.activeTabClassName;
+
   tab.style['zIndex'] = this.baseZIndex_;
   tab.style['borderBottomWidth'] = 0;
   tab.style['marginBottomWidth'] = '-10px';
@@ -1405,8 +1413,7 @@ InfoBubble.prototype['setMaxWidth'] = InfoBubble.prototype.setMaxWidth;
 InfoBubble.prototype.maxWidth_changed = function() {
   this.redraw_();
 };
-InfoBubble.prototype['maxWidth_changed'] =
-    InfoBubble.prototype.maxWidth_changed;
+InfoBubble.prototype['maxWidth_changed'] = InfoBubble.prototype.maxWidth_changed;
 
 
 /**
@@ -1426,8 +1433,7 @@ InfoBubble.prototype['setMaxHeight'] = InfoBubble.prototype.setMaxHeight;
 InfoBubble.prototype.maxHeight_changed = function() {
   this.redraw_();
 };
-InfoBubble.prototype['maxHeight_changed'] =
-    InfoBubble.prototype.maxHeight_changed;
+InfoBubble.prototype['maxHeight_changed'] = InfoBubble.prototype.maxHeight_changed;
 
 
 /**
@@ -1447,8 +1453,7 @@ InfoBubble.prototype['setMinWidth'] = InfoBubble.prototype.setMinWidth;
 InfoBubble.prototype.minWidth_changed = function() {
   this.redraw_();
 };
-InfoBubble.prototype['minWidth_changed'] =
-    InfoBubble.prototype.minWidth_changed;
+InfoBubble.prototype['minWidth_changed'] = InfoBubble.prototype.minWidth_changed;
 
 
 /**
@@ -1468,8 +1473,7 @@ InfoBubble.prototype['setMinHeight'] = InfoBubble.prototype.setMinHeight;
 InfoBubble.prototype.minHeight_changed = function() {
   this.redraw_();
 };
-InfoBubble.prototype['minHeight_changed'] =
-    InfoBubble.prototype.minHeight_changed;
+InfoBubble.prototype['minHeight_changed'] = InfoBubble.prototype.minHeight_changed;
 
 
 /**
@@ -1505,6 +1509,7 @@ InfoBubble.prototype.addTab = function(label, content) {
   this.redraw_();
 };
 InfoBubble.prototype['addTab'] = InfoBubble.prototype.addTab;
+
 
 /**
  * Update a tab at a speicifc index
@@ -1783,8 +1788,8 @@ InfoBubble.prototype.positionCloseButton_ = function() {
   var br = this.getBorderRadius_();
   var bw = this.getBorderWidth_();
 
-  var right = 6;
-  var top = 6;
+  var right = 2;
+  var top = 2;
 
   if (this.tabs_.length && this.tabHeight_) {
     top += this.tabHeight_;
