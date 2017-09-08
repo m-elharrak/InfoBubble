@@ -1,0 +1,19 @@
+{
+  "name": "ginfobubble",
+  "version": "1.0.0",
+  "description": "Clone of Google Maps InfoBubble Library With Some modification",
+  "main": "infobubble.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-elharrak/InfoBubble.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m-elharrak/InfoBubble/issues"
+  },
+  "homepage": "https://github.com/m-elharrak/InfoBubble#readme"
+}
